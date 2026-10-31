@@ -17,11 +17,16 @@ import java.util.List;
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String idReservation;
+    private Long idReservation;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date anneeUniversitaire;
     private boolean estValise;
 
+
+    @ManyToOne
+    private Chambre chambre;
+
     @ManyToMany(mappedBy = "reservations")
     private List<Etudiant> etudiants;
+
 }
