@@ -1,8 +1,10 @@
+
 package tn.esprim.gestiondefoyer.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import tn.esprim.gestiondefoyer.entity.Universite;
 import tn.esprim.gestiondefoyer.services.IUniversiteService;
 
@@ -51,7 +53,39 @@ public class UniversiteRestController {
         if (universiteService.findById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
         universiteService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/affecterFoyer/{idFoyer}/{nomUniversite}")
+    public ResponseEntity<Universite> affecterFoyer(
+            @PathVariable long idFoyer,
+            @PathVariable String nomUniversite) {
+
+        Universite universite =
+                universiteService.affecterFoyerAUniversite(
+                        idFoyer, nomUniversite
+                );
+
+        if (universite == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(universite);
+    }
+
+    @PutMapping("/desaffecterFoyer/{idUniversite}")
+    public ResponseEntity<Universite> desaffecterFoyer(
+            @PathVariable long idUniversite) {
+
+        Universite universite =
+                universiteService.desaffecterFoyerAUniversite(idUniversite);
+
+        if (universite == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(universite);
     }
 }

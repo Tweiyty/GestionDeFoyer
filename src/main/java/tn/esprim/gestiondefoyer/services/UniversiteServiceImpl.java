@@ -1,10 +1,13 @@
+
 package tn.esprim.gestiondefoyer.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import tn.esprim.gestiondefoyer.entity.Foyer;
 import tn.esprim.gestiondefoyer.entity.Universite;
+import tn.esprim.gestiondefoyer.repository.FoyerRepository;
 import tn.esprim.gestiondefoyer.repository.UniversiteRepository;
-import tn.esprim.gestiondefoyer.services.IUniversiteService;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +17,9 @@ public class UniversiteServiceImpl implements IUniversiteService {
 
     @Autowired
     private UniversiteRepository universiteRepository;
+
+    @Autowired
+    private FoyerRepository foyerRepository;
 
     @Override
     public Universite save(Universite universite) {
@@ -36,6 +42,7 @@ public class UniversiteServiceImpl implements IUniversiteService {
             existing.setNomUniversite(universite.getNomUniversite());
             existing.setAdresse(universite.getAdresse());
             existing.setFoyer(universite.getFoyer());
+
             return universiteRepository.save(existing);
         }).orElseThrow(() ->
                 new RuntimeException("Universite introuvable : " + id)
@@ -45,5 +52,37 @@ public class UniversiteServiceImpl implements IUniversiteService {
     @Override
     public void deleteById(Long id) {
         universiteRepository.deleteById(id);
+    }
+
+    // Affecter un foyer à une université
+    @Override
+    public Universite affecterFoyerAUniversite(long idFoyer, String nomUniversite) {
+
+        Foyer foyer = foyerRepository.findById(idFoyer).orElse(null);
+
+        Universite universite =
+                universiteRepository.findByNomUniversite(nomUniversite);
+
+        if (foyer != null && universite != null) {
+            universite.setFoyer(foyer);
+            return universiteRepository.save(universite);
+        }
+
+        return null;
+    }
+
+    // Désaffecter le foyer d'une université
+    @Override
+    public Universite desaffecterFoyerAUniversite(long idUniversite) {
+
+        Universite universite =
+                universiteRepository.findById(idUniversite).orElse(null);
+
+        if (universite != null) {
+            universite.setFoyer(null);
+            return universiteRepository.save(universite);
+        }
+
+        return null;
     }
 }

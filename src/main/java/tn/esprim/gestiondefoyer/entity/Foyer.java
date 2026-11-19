@@ -1,5 +1,6 @@
 package tn.esprim.gestiondefoyer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import jakarta.persistence.OneToOne;
@@ -19,6 +20,7 @@ public class Foyer {
     private String nomFoyer;
     private Long capaciteFoyer;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "foyer")
     private Universite universite;
 
